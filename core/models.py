@@ -1,7 +1,7 @@
 from django.db import models
 import uuid
 from django.contrib.auth.base_user import BaseUserManager
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
 
 class UserManager(BaseUserManager):
@@ -44,7 +44,7 @@ class Role(models.Model):
     user_role = models.CharField(max_length=50)
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     uid = models.UUIDField(unique=True, editable=False, default=uuid.uuid4, verbose_name='public identifier')
     username = models.CharField(max_length=50, null=True, blank=True)
     first_name = models.CharField(max_length=30, blank=True)
