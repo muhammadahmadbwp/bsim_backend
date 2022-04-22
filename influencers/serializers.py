@@ -1,5 +1,3 @@
-from pyexpat import model
-from tkinter.messagebox import NO
 from rest_framework import serializers
 from influencers.models import (
     InfluencersDetail,

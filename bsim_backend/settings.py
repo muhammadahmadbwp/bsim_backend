@@ -177,3 +177,14 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 50,
     'EXCEPTION_HANDLER': 'common.custom_exception.custom_exception_handler',
 }
+
+
+# ==============================================================================
+# CORS HEADERS SETTINGS
+# ==============================================================================
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
