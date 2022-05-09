@@ -1,0 +1,1 @@
+web: gunicorn bsim_backend.wsgi
