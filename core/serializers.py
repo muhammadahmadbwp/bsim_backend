@@ -1,7 +1,13 @@
+from adminpanel.models import AdminsDetail
+from clientpanel.models import ClientsDetail
+from influencers.models import InfluencersDetail
 from rest_framework import serializers
 from core.models import User, Role
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import password_validation
+from adminpanel.serializers import AdminsDetailSerializer
+from clientpanel.serializers import ClientsDetailSerializer
+from influencers.serializers import InfluencersDetailSerializer
 
 
 class RoleSerializer(serializers.ModelSerializer):
@@ -51,10 +57,11 @@ class GetUserSerializer(serializers.ModelSerializer):
 
 class AuthUserSerializer(serializers.ModelSerializer):
     auth_token = serializers.SerializerMethodField()
+    user_detail = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ('id', 'auth_token', 'email', 'is_active', 'is_staff', 'is_superuser')
+        fields = ('id', 'auth_token', 'email', 'username', 'is_active', 'is_staff', 'is_superuser', 'user_detail')
         read_only_fields = ('id', 'email', 'is_active', 'is_staff', 'is_superuser')
 
     def get_auth_token(self, obj):
@@ -64,6 +71,19 @@ class AuthUserSerializer(serializers.ModelSerializer):
             token = Token.objects.create(user=obj)
         return token.key
 
+    def get_user_detail(self, obj):
+        if obj.role.user_role == 'ADMIN':
+            queryset = AdminsDetail.objects.get(user=obj)
+            serializer = AdminsDetailSerializer(queryset)
+            return serializer.data
+        if obj.role.user_role == 'CLIENT':
+            queryset = ClientsDetail.objects.get(user=obj)
+            serializer = ClientsDetailSerializer(queryset)
+            return serializer.data
+        if obj.role.user_role == 'INFLUENCER':
+            queryset = InfluencersDetail.objects.get(user=obj)
+            serializer = InfluencersDetailSerializer(queryset)
+            return serializer.data
 
 class ChangePasswordSerializer(serializers.Serializer):
     current_password = serializers.CharField(required=True)

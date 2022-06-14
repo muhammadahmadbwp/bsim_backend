@@ -1,11 +1,19 @@
 from rest_framework import serializers
 from adminpanel.models import (
+    AdminsDetail,
     BrandCategory,
     BrandDetail,
     CampaignDetail,
     CampaignDates,
     HashtagDetail
 )
+
+
+class AdminsDetailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = AdminsDetail
+        fields = "__all__"
 
 
 class BrandCategorySerializer(serializers.ModelSerializer):

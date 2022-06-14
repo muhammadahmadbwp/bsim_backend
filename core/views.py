@@ -32,6 +32,8 @@ class UserViewSet(viewsets.ViewSet):
         return Response({"data":data, "success":True, "message":"data found"}, status=status.HTTP_200_OK)
 
     def create(self, request):
+        if 'username' not in request.data:
+            request.data['username'] = request.data['email']
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()

@@ -69,7 +69,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     otp = models.CharField(max_length=4, blank=True, null=True)
     otp_created_at = models.DateTimeField(blank=True, null=True)
 
-    REQUIRED_FIELDS = ['username', 'password', 'role']
+    REQUIRED_FIELDS = ['username', 'password']
     USERNAME_FIELD = 'email'
 
     objects = UserManager()
