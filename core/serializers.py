@@ -80,10 +80,10 @@ class AuthUserSerializer(serializers.ModelSerializer):
             queryset = ClientsDetail.objects.get(user=obj)
             serializer = ClientsDetailSerializer(queryset)
             return serializer.data
-        if obj.role.user_role == 'INFLUENCER':
-            queryset = InfluencersDetail.objects.get(user=obj)
-            serializer = InfluencersDetailSerializer(queryset)
-            return serializer.data
+        if obj.role.user_role == 'INFLUENCER' and InfluencersDetail.objects.filter(user=obj).exists():
+                queryset = InfluencersDetail.objects.get(user=obj)
+                serializer = InfluencersDetailSerializer(queryset)
+                return serializer.data
 
 class ChangePasswordSerializer(serializers.Serializer):
     current_password = serializers.CharField(required=True)
