@@ -181,3 +181,25 @@ class CampaignDetailViewSet(viewsets.ViewSet):
     def destroy(self, request, pk=None):
         self.get_queryset(request).get(pk=pk).delete()
         return Response({"data":[], "success":True, "message":"campaign detail deleted successfully"}, status=status.HTTP_200_OK)
+
+
+class ActiveCampaignsViewSet(viewsets.ViewSet):
+
+    parser_classes = [JSONParser, MultiPartParser, FormParser, FileUploadParser]
+    # permission_classes = [IsAuthenticated]
+
+    def get_queryset(self, request):
+        queryset = CampaignDetail.objects.filter(is_active=True)
+        return queryset
+
+    def list(self, request):
+        queryset = self.get_queryset(request)
+        serializer = CampaignDetailSerializer(queryset, many=True)
+        data = serializer.data
+        return Response({"data":data, "success":True, "message":"data found"}, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, pk=None):
+        queryset = self.get_queryset(request).get(pk=pk)
+        serializer = CampaignDetailSerializer(queryset)
+        data = serializer.data
+        return Response({"data":data, "success":True, "message":"data found"}, status=status.HTTP_200_OK)

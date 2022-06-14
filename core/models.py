@@ -1,7 +1,11 @@
 from django.db import models
 import uuid
 from django.contrib.auth.base_user import BaseUserManager
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, AbstractUser
+from adminpanel.models import AdminsDetail
+from clientpanel.models import ClientsDetail
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class UserManager(BaseUserManager):
@@ -43,16 +47,18 @@ class Role(models.Model):
     id = models.PositiveSmallIntegerField(primary_key=True)
     user_role = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.user_role
 
 class User(AbstractBaseUser, PermissionsMixin):
     uid = models.UUIDField(unique=True, editable=False, default=uuid.uuid4, verbose_name='public identifier')
-    username = models.CharField(max_length=50, null=True, blank=True)
+    username = models.CharField(unique=True, max_length=50, null=False, blank=False)
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
-    email = models.EmailField(unique=True, blank=True, null=True)
+    email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=30, unique=True, blank=True, null=True)
-    password = models.CharField(max_length=128, blank=True, null=True)
-    role = models.ForeignKey(Role, blank=True, null=True, on_delete=models.CASCADE, related_name='user_roles')
+    password = models.CharField(max_length=128)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, related_name='user_roles')
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -63,7 +69,17 @@ class User(AbstractBaseUser, PermissionsMixin):
     otp = models.CharField(max_length=4, blank=True, null=True)
     otp_created_at = models.DateTimeField(blank=True, null=True)
 
+    REQUIRED_FIELDS = ['username', 'password', 'role']
+    USERNAME_FIELD = 'email'
+
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    def __str__(self):
+        return self.username
+
+@receiver(post_save, sender=User, dispatch_uid="create_user_detail")
+def create_user_detail(sender, instance, **kwargs):
+    if instance.role.user_role == 'ADMIN':
+        AdminsDetail.objects.create(user=instance)
+    if instance.role.user_role == 'CLIENT':
+        ClientsDetail.objects.create(user=instance)

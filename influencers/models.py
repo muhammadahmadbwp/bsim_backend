@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import User
+
 import os
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -23,7 +23,7 @@ class InfluencersDetail(models.Model):
         ("3", "Other")
     )
 
-    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE, related_name='influencer_user')
+    user = models.ForeignKey('core.User', blank=True, null=True, on_delete=models.CASCADE, related_name='influencer_user')
     influencer_name = models.CharField(max_length=100, null=True, blank=True)
     insta_username = models.CharField(max_length=100, null=True, blank=True)
     gender = models.CharField(max_length=30, choices=GENDER)

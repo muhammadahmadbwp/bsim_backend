@@ -8,6 +8,7 @@ router.register(r'brand_category', views.BrandCategoryViewSet, basename='brand-c
 router.register(r'brand_detail', views.BrandDetailViewSet, basename='brand-detail-api')
 router.register(r'campaign_detail', views.CampaignDetailViewSet, basename='campaign-detail-api')
 router.register(r'hashtag_detail', views.HashtagDetailViewSet, basename='hashtag-detail-api')
+router.register(r'active_campaigns', views.ActiveCampaignsViewSet, basename='active-campaigns-api')
 
 urlpatterns = [
     path('', include(router.urls)),
