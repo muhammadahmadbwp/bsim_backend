@@ -61,7 +61,7 @@ class AuthUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'auth_token', 'email', 'username', 'is_active', 'is_staff', 'is_superuser', 'user_detail')
+        fields = ('id', 'auth_token', 'email', 'username', 'role', 'is_active', 'is_staff', 'is_superuser', 'user_detail')
         read_only_fields = ('id', 'email', 'is_active', 'is_staff', 'is_superuser')
 
     def get_auth_token(self, obj):
