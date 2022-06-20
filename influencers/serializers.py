@@ -23,6 +23,7 @@ class InfluencersChildrenSerializer(serializers.ModelSerializer):
 
 
 class InfluencersCategoriesSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(max_value=None, min_value=None)
 
     class Meta:
         model = InfluencersCategories
