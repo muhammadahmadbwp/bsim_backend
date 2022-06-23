@@ -4,7 +4,8 @@ from influencers.models import (
     InfluencersChildren,
     InfluencersCategories,
     InfluencersInterests,
-    InfluencersServicesCost
+    InfluencersServicesCost,
+    InfluencersInterests
 )
 
 
@@ -111,3 +112,16 @@ class GetInfluencersDetailSerializer(serializers.ModelSerializer):
         model = InfluencersDetail
         fields = "__all__"
         depth = 1
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if instance.user:
+            representation.pop('user')
+        return representation
+
+
+class InfluencersInterestsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = InfluencersInterests
+        fields = "__all__"
