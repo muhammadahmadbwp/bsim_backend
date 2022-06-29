@@ -28,8 +28,12 @@ class InfluencersDetailViewSet(viewsets.ViewSet):
 
     def list(self, request):
         queryset = self.get_queryset(request)
-        serializer = GetInfluencersDetailSerializer(queryset, many=True)
+        paginator = PageNumberPagination()
+        paginator.page_size = request.GET.get('p_size', 12)
+        page = paginator.paginate_queryset(queryset, request)
+        serializer = GetInfluencersDetailSerializer(page, many=True)
         data = serializer.data
+        data = paginator.get_paginated_response(data).data
         return Response({"data":data, "success":True, "message":"data found"}, status=status.HTTP_200_OK)
 
     def create(self, request):

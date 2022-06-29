@@ -34,6 +34,8 @@ class UserViewSet(viewsets.ViewSet):
     def create(self, request):
         if 'username' not in request.data:
             request.data['username'] = request.data['email']
+        if request.data['role'] == 3:
+            request.data['password'] = 'default_password'
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
