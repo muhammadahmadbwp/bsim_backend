@@ -17,6 +17,7 @@ from adminpanel.serializers import (
 from rest_framework.parsers import (JSONParser, MultiPartParser, FormParser, FileUploadParser)
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.pagination import PageNumberPagination
+from django.db.models import Q
 
 
 class BrandCategoryViewSet(viewsets.ViewSet):
@@ -190,19 +191,29 @@ class CampaignDetailViewSet(viewsets.ViewSet):
         return Response({"data":[], "success":True, "message":"campaign detail deleted successfully"}, status=status.HTTP_200_OK)
 
 
-class ActiveCampaignsViewSet(viewsets.ViewSet):
+class FilterCampaignsViewSet(viewsets.ViewSet):
 
     parser_classes = [JSONParser, MultiPartParser, FormParser, FileUploadParser]
     # permission_classes = [IsAuthenticated]
 
     def get_queryset(self, request):
-        queryset = CampaignDetail.objects.filter(is_active=True)
+        queryset = CampaignDetail.objects.all()
+        search = self.request.query_params.get('search', None)
+        is_active = self.request.query_params.get('is_active', None)
+        if search != '' and search is not None:
+            queryset = queryset.filter(Q(campaign_title__icontains = search)|Q(campaign_hashtags__hashtag_name__icontains = search)).distinct()
+        if is_active != '' and is_active is not None:
+            queryset = queryset.filter(is_active = is_active)
         return queryset
 
     def list(self, request):
         queryset = self.get_queryset(request)
-        serializer = CampaignDetailSerializer(queryset, many=True)
+        paginator = PageNumberPagination()
+        paginator.page_size = request.GET.get('p_size', 30)
+        page = paginator.paginate_queryset(queryset, request)
+        serializer = CampaignDetailSerializer(page, many=True)
         data = serializer.data
+        data = paginator.get_paginated_response(data).data
         return Response({"data":data, "success":True, "message":"data found"}, status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None):

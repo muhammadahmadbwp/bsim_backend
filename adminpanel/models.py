@@ -53,6 +53,7 @@ class CampaignDetail(models.Model):
         ("2", "Periodic")
     )
 
+    campaign_title = models.CharField(max_length=300)
     campaign_type = models.CharField(max_length=30, choices=CAMPAIGN_TYPE)
     campaign_dates = models.ManyToManyField('adminpanel.CampaignDates', blank=True, related_name='dates')
     campaign_total_days = models.CharField(max_length=30)
