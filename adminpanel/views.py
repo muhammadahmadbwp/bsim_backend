@@ -16,6 +16,7 @@ from adminpanel.serializers import (
 )
 from rest_framework.parsers import (JSONParser, MultiPartParser, FormParser, FileUploadParser)
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.pagination import PageNumberPagination
 
 
 class BrandCategoryViewSet(viewsets.ViewSet):
@@ -75,7 +76,6 @@ class BrandDetailViewSet(viewsets.ViewSet):
         return Response({"data":data, "success":True, "message":"data found"}, status=status.HTTP_200_OK)
 
     def create(self, request):
-        print(request.data)
         serializer = BrandDetailSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -108,12 +108,19 @@ class HashtagDetailViewSet(viewsets.ViewSet):
 
     def get_queryset(self, request):
         queryset = HashtagDetail.objects.all()
+        search = self.request.query_params.get('search', None)
+        if search != '' and search is not None:
+            queryset = queryset.filter(hashtag_name__icontains = search).distinct('hashtag_name')
         return queryset
 
     def list(self, request):
         queryset = self.get_queryset(request)
-        serializer = HashtagDetailSerializer(queryset, many=True)
+        paginator = PageNumberPagination()
+        paginator.page_size = request.GET.get('p_size', 30)
+        page = paginator.paginate_queryset(queryset, request)
+        serializer = HashtagDetailSerializer(page, many=True)
         data = serializer.data
+        data = paginator.get_paginated_response(data).data
         return Response({"data":data, "success":True, "message":"data found"}, status=status.HTTP_200_OK)
 
     def create(self, request):
