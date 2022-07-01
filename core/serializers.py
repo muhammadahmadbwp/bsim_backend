@@ -18,6 +18,7 @@ class RoleSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    user_detail = serializers.JSONField(required=False, write_only=True)
 
     class Meta:
         model = User
@@ -26,12 +27,17 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         password = validated_data.pop('password', None)
         role = validated_data.pop('role', None)
+        user_detail = validated_data.pop('user_detail', None)
         instance = self.Meta.model(**validated_data)
         if password is not None:
             instance.set_password(password)
         if role is not None:
             instance.role = role
         instance.save()
+        if role.user_role == 'CLIENT':
+            if user_detail is not None:
+                user_detail['user'] = instance
+                ClientsDetail.objects.create(**user_detail)
         return instance
 
     def to_representation(self, instance):

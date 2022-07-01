@@ -81,5 +81,5 @@ class User(AbstractBaseUser, PermissionsMixin):
 def create_user_detail(sender, instance, **kwargs):
     if instance.role.user_role == 'ADMIN':
         AdminsDetail.objects.create(user=instance)
-    if instance.role.user_role == 'CLIENT':
-        ClientsDetail.objects.create(user=instance)
+    # if instance.role.user_role == 'CLIENT':
+    #     ClientsDetail.objects.create(user=instance)
