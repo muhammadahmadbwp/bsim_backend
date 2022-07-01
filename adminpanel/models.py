@@ -34,12 +34,12 @@ class AdminsDetail(models.Model):
 class BrandDetail(models.Model):
     brand_name = models.CharField(max_length=100)
     brand_avatar = models.ImageField(_("Brand Avatar"), upload_to=upload_to, blank=True, null=True)
-    category = models.ManyToManyField('adminpanel.BrandCategory', blank=True, related_name='categories')
+    # category = models.ManyToManyField('adminpanel.BrandCategory', blank=True, related_name='categories')
 
 
-class BrandCategory(models.Model):
-    id = models.PositiveSmallIntegerField(primary_key=True)
-    brand_category = models.CharField(max_length=100)
+# class BrandCategory(models.Model):
+#     id = models.PositiveSmallIntegerField(primary_key=True)
+#     brand_category = models.CharField(max_length=100)
 
 
 class HashtagDetail(models.Model):

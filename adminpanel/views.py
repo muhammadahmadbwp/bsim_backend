@@ -1,14 +1,14 @@
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from adminpanel.models import (
-    BrandCategory,
+    # BrandCategory,
     BrandDetail,
     CampaignDetail,
     CampaignDates,
     HashtagDetail
 )
 from adminpanel.serializers import (
-    BrandCategorySerializer,
+    # BrandCategorySerializer,
     BrandDetailSerializer,
     CampaignDetailSerializer,
     CampaignDatesSerializer,
@@ -20,45 +20,45 @@ from rest_framework.pagination import PageNumberPagination
 from django.db.models import Q
 
 
-class BrandCategoryViewSet(viewsets.ViewSet):
+# class BrandCategoryViewSet(viewsets.ViewSet):
 
-    parser_classes = [JSONParser, MultiPartParser, FormParser, FileUploadParser]
-    # permission_classes = [IsAuthenticated]
+#     parser_classes = [JSONParser, MultiPartParser, FormParser, FileUploadParser]
+#     # permission_classes = [IsAuthenticated]
 
-    def get_queryset(self, request):
-        queryset = BrandCategory.objects.all()
-        return queryset
+#     def get_queryset(self, request):
+#         queryset = BrandCategory.objects.all()
+#         return queryset
 
-    def list(self, request):
-        queryset = self.get_queryset(request)
-        serializer = BrandCategorySerializer(queryset, many=True)
-        data = serializer.data
-        return Response({"data":data, "success":True, "message":"data found"}, status=status.HTTP_200_OK)
+#     def list(self, request):
+#         queryset = self.get_queryset(request)
+#         serializer = BrandCategorySerializer(queryset, many=True)
+#         data = serializer.data
+#         return Response({"data":data, "success":True, "message":"data found"}, status=status.HTTP_200_OK)
 
-    def create(self, request):
-        serializer = BrandCategorySerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        data = serializer.data
-        return Response({"data":data, "success":True, "message":"brand category created successfully"}, status=status.HTTP_200_OK)
+#     def create(self, request):
+#         serializer = BrandCategorySerializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         data = serializer.data
+#         return Response({"data":data, "success":True, "message":"brand category created successfully"}, status=status.HTTP_200_OK)
 
-    def update(self, request, pk=None):
-        queryset = self.get_queryset(request).get(pk=pk)
-        serializer = BrandCategorySerializer(instance=queryset, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        data = serializer.data
-        return Response({"data":data, "success":True, "message":"brand category updated successfully"}, status=status.HTTP_200_OK)
+#     def update(self, request, pk=None):
+#         queryset = self.get_queryset(request).get(pk=pk)
+#         serializer = BrandCategorySerializer(instance=queryset, data=request.data, partial=True)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         data = serializer.data
+#         return Response({"data":data, "success":True, "message":"brand category updated successfully"}, status=status.HTTP_200_OK)
 
-    def retrieve(self, request, pk=None):
-        queryset = self.get_queryset(request).get(pk=pk)
-        serializer = BrandCategorySerializer(queryset)
-        data = serializer.data
-        return Response({"data":data, "success":True, "message":"data found"}, status=status.HTTP_200_OK)
+    # def retrieve(self, request, pk=None):
+    #     queryset = self.get_queryset(request).get(pk=pk)
+    #     serializer = BrandCategorySerializer(queryset)
+    #     data = serializer.data
+    #     return Response({"data":data, "success":True, "message":"data found"}, status=status.HTTP_200_OK)
 
-    def destroy(self, request, pk=None):
-        self.get_queryset(request).get(pk=pk).delete()
-        return Response({"data":[], "success":True, "message":"brand category deleted successfully"}, status=status.HTTP_200_OK)
+    # def destroy(self, request, pk=None):
+    #     self.get_queryset(request).get(pk=pk).delete()
+    #     return Response({"data":[], "success":True, "message":"brand category deleted successfully"}, status=status.HTTP_200_OK)
 
 
 class BrandDetailViewSet(viewsets.ViewSet):
