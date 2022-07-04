@@ -88,12 +88,12 @@ WSGI_APPLICATION = 'bsim_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': env('DATABASE_ENGINE'),
         'NAME': env('DATABASE_NAME'),
         'USER': env('DATABASE_USER'),
         'PASSWORD': env('DATABASE_PASSWORD'),
         'HOST': env('DATABASE_HOST'),
-        'PORT': '5432',
+        'PORT': env('DATABASE_PORT'),
     }
 }
 
@@ -194,3 +194,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "https://socialmetrics.netlify.app"
 ]
+
+
+CELERY_BROKER_URL = "redis://redis:6379"
+CELERY_RESULT_BACKEND = "redis://redis:6379"

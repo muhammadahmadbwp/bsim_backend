@@ -1,0 +1,101 @@
+version: '3.8'
+
+services:
+
+  celery:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: celery_container
+    restart: unless-stopped
+    command: bash -c "celery -A bsim_backend worker -l info"
+    depends_on:
+      - django
+      - redis
+    env_file:
+      - .env
+    volumes:
+      - .:/code/
+    networks:
+      - default
+
+  celery_beat:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: celery_beat_container
+    restart: unless-stopped
+    command: bash -c "celery -A bsim_backend beat -l info"
+    depends_on:
+      - django
+      - redis
+    env_file:
+      - .env
+    volumes:
+      - .:/code/
+    networks:
+      - default
+
+  django:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: django_container
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    command: bash -c "python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
+    volumes:
+      - ./:/code
+      - project_static_volume:/code/static
+      - project_media_volume:/code/media
+    # depends_on:
+    #   - postgres
+    networks:
+      - default
+
+  flower:
+    image: mher/flower:0.9.7
+    container_name: flower_container
+    restart: unless-stopped
+    command: ["flower", "--broker=redis://redis:6379/0", "--broker_api=redis://redis:6379/0", "--port=5555"]
+    ports:
+      - 5555:5555
+    networks:
+      - default
+
+  # postgres:
+  #   image: postgres:13.3-buster
+  #   container_name: postgres_container
+  #   restart: unless-stopped
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - 5432:5432
+  #   volumes:
+  #     - project_postgres_data:/var/lib/postgresql/data/
+  #   networks:
+  #     - default
+
+  redis:
+    image: redis:6.2-buster
+    container_name: redis_container
+    restart: unless-stopped
+    volumes:
+      - project_redis_data:/data
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  # project_postgres_data:
+  project_redis_data:
+  project_static_volume:
+  project_media_volume:
