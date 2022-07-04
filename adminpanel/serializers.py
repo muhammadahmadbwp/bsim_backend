@@ -7,7 +7,10 @@ from adminpanel.models import (
     CampaignDates,
     HashtagDetail
 )
-
+from django.db.models import Sum
+from django.db.models.functions import Cast
+from django.db.models import IntegerField
+from datetime import datetime as dt
 
 class AdminsDetailSerializer(serializers.ModelSerializer):
 
@@ -67,10 +70,44 @@ class CampaignDetailSerializer(serializers.ModelSerializer):
             item.assigned_influencers.set(assigned_influencers)
         campaign_days = []
         if campaign_dates_data is not None:
+            campaign_days_count = 0
             for date_x in campaign_dates_data:
+                # days = (dt.strptime(date_x.get('end_datetime'), '%Y-%m-%d %X') - dt.strptime(date_x.get('start_datetime'), '%Y-%m-%d %X').days)
+                days = (date_x.get('end_datetime') - date_x.get('start_datetime')).days
+                campaign_days_count += days
+                date_x['day_count'] = days
                 date_x_data = CampaignDates.objects.create(**date_x)
                 date_x_data.save()
                 campaign_days.append(date_x_data)
                 item.campaign_dates.add(*campaign_days)
+        item.campaign_total_days = campaign_days_count
+        item.total_campaigns = len(campaign_dates_data)
+        item.total_influencers = len(assigned_influencers)
+        item.campaign_start_date = min([x['start_datetime'] for x in campaign_dates_data])
+        item.campaign_end_date = max([x['end_datetime'] for x in campaign_dates_data])
+        item.save()
         return item
 
+
+class FilterCampaignsSerializer(serializers.ModelSerializer):
+    # total_campaigns = serializers.SerializerMethodField()
+    # total_influencers = serializers.SerializerMethodField()
+    # total_campaign_days = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CampaignDetail
+        fields = "__all__"
+        depth = 1
+
+    # def get_total_campaigns(self, instance):
+    #     return instance.campaign_dates.count()
+
+    # def get_total_influencers(self, instance):
+    #     return instance.assigned_influencers.count()
+
+    # def get_total_campaign_days(self, instance):
+    #     return CampaignDetail.objects.values('campaign_dates__day_count').filter(
+    #         id=instance.id
+    #         ).annotate(campaign_days=Cast('campaign_dates__day_count', IntegerField())).aggregate(
+    #             Sum('campaign_days')
+    #             ).get('campaign_days__sum')

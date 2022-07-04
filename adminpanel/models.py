@@ -53,14 +53,28 @@ class CampaignDetail(models.Model):
         ("2", "Periodic")
     )
 
+    CAMPAIGN_STATUS = (
+        ("1", "Active"),
+        ("2", "Inactive"),
+        ("3", "Completed")
+    )
+
     campaign_title = models.CharField(max_length=300)
     campaign_type = models.CharField(max_length=30, choices=CAMPAIGN_TYPE)
     campaign_dates = models.ManyToManyField('adminpanel.CampaignDates', blank=True, related_name='dates')
-    campaign_total_days = models.CharField(max_length=30)
+    campaign_total_days = models.CharField(max_length=30, blank=True, null=True)
+    campaign_completed_days = models.CharField(max_length=30, blank=True, null=True)
+    campaign_cycle_no = models.CharField(max_length=30, blank=True, null=True)
     campaign_brands = models.ManyToManyField('adminpanel.BrandDetail', blank=True, related_name='brands')
     campaign_hashtags = models.ManyToManyField('adminpanel.HashtagDetail', blank=True, related_name='hashtags')
     assigned_influencers = models.ManyToManyField(InfluencersDetail, blank=True, related_name='influencers')
-    is_active = models.BooleanField()
+    campaign_status = models.CharField(max_length=30, choices=CAMPAIGN_STATUS)
+    total_campaigns = models.CharField(max_length=30, blank=True, null=True)
+    total_influencers = models.CharField(max_length=30, blank=True, null=True)
+    campaign_start_date = models.DateTimeField(blank=True, null=True)
+    campaign_end_date = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
 
 
 class CampaignDates(models.Model):
@@ -79,4 +93,4 @@ class CampaignDates(models.Model):
     start_day = models.CharField(max_length=30, choices=WEEK_DAYS)
     end_datetime = models.DateTimeField()
     end_day = models.CharField(max_length=30, choices=WEEK_DAYS)
-    day_count = models.CharField(max_length=30)
+    day_count = models.CharField(max_length=30, blank=True, null=True)

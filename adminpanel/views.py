@@ -12,7 +12,8 @@ from adminpanel.serializers import (
     BrandDetailSerializer,
     CampaignDetailSerializer,
     CampaignDatesSerializer,
-    HashtagDetailSerializer
+    HashtagDetailSerializer,
+    FilterCampaignsSerializer
 )
 from rest_framework.parsers import (JSONParser, MultiPartParser, FormParser, FileUploadParser)
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -211,13 +212,13 @@ class FilterCampaignsViewSet(viewsets.ViewSet):
         paginator = PageNumberPagination()
         paginator.page_size = request.GET.get('p_size', 30)
         page = paginator.paginate_queryset(queryset, request)
-        serializer = CampaignDetailSerializer(page, many=True)
+        serializer = FilterCampaignsSerializer(page, many=True)
         data = serializer.data
         data = paginator.get_paginated_response(data).data
         return Response({"data":data, "success":True, "message":"data found"}, status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None):
         queryset = self.get_queryset(request).get(pk=pk)
-        serializer = CampaignDetailSerializer(queryset)
+        serializer = FilterCampaignsSerializer(queryset)
         data = serializer.data
         return Response({"data":data, "success":True, "message":"data found"}, status=status.HTTP_200_OK)
