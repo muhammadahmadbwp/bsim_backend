@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
+    'django_celery_beat',
     'core',
     'influencers',
     'adminpanel',
@@ -198,3 +199,20 @@ CORS_ALLOWED_ORIGINS = [
 
 CELERY_BROKER_URL = "redis://redis:6379"
 CELERY_RESULT_BACKEND = "redis://redis:6379"
+
+
+CELERY_IMPORTS = [
+    'adminpanel.tasks',
+]
+
+
+# CELERY_BEAT_SCHEDULE = {
+#       'add-every-30-seconds': {
+#         'task': 'adminpanel.tasks.add',
+#         'schedule': 30.0,
+#         'args': (16, 16),
+#         'options': {
+#             'expires': 15.0,
+#         },
+#     },
+# }
