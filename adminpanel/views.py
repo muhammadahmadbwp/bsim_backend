@@ -11,6 +11,7 @@ from adminpanel.serializers import (
     # BrandCategorySerializer,
     BrandDetailSerializer,
     CampaignDetailSerializer,
+    GetCampaignDetailSerializer,
     CampaignDatesSerializer,
     HashtagDetailSerializer,
     FilterCampaignsSerializer
@@ -162,7 +163,7 @@ class CampaignDetailViewSet(viewsets.ViewSet):
 
     def list(self, request):
         queryset = self.get_queryset(request)
-        serializer = CampaignDetailSerializer(queryset, many=True)
+        serializer = GetCampaignDetailSerializer(queryset, many=True)
         data = serializer.data
         return Response({"data":data, "success":True, "message":"data found"}, status=status.HTTP_200_OK)
 
@@ -183,7 +184,7 @@ class CampaignDetailViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         queryset = self.get_queryset(request).get(pk=pk)
-        serializer = CampaignDetailSerializer(queryset)
+        serializer = GetCampaignDetailSerializer(queryset)
         data = serializer.data
         return Response({"data":data, "success":True, "message":"data found"}, status=status.HTTP_200_OK)
 

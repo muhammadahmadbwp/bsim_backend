@@ -89,6 +89,15 @@ class CampaignDetailSerializer(serializers.ModelSerializer):
         return item
 
 
+class GetCampaignDetailSerializer(serializers.ModelSerializer):
+    campaign_dates = CampaignDatesSerializer(write_only=False, many=True)
+
+    class Meta:
+        model = CampaignDetail
+        fields = "__all__"
+        depth = 1
+
+
 class FilterCampaignsSerializer(serializers.ModelSerializer):
     # total_campaigns = serializers.SerializerMethodField()
     # total_influencers = serializers.SerializerMethodField()
